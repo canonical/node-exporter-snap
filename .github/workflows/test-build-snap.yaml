@@ -1,0 +1,47 @@
+# Build the snap on pull_request to ensure the snap is buildable before merge to main
+#
+# This workflow duplicates some of the logic from release-snap.yaml.  If modifying this workflow,
+# ensure that release-snap.yaml is also updated
+name: Test Build Snap
+
+on:
+  pull_request:
+
+env:
+  SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+  LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
+
+jobs:
+  build:
+    name: Build snap (${{ matrix.confinement }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        confinement: [ "strict"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # snapcraft remote-build requires a full clone
+          fetch-depth: 0
+
+      - name: Setup LXD
+        uses: canonical/setup-lxd@v0.1.1
+        with:
+          channel: latest/stable
+
+      - name: Install dependencies
+        run: |
+          sudo snap install --classic --channel edge snapcraft
+          # Setup Launchpad credentials
+          mkdir -p ~/.local/share/snapcraft
+          echo -e "$LAUNCHPAD_TOKEN" >> ~/.local/share/snapcraft/launchpad-credentials
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "Github Actions"
+
+      - name: yq - portable yaml processor
+        uses: mikefarah/yq@v4
+
+      - name: Build Snap (remote)
+        run: snapcraft remote-build --launchpad-accept-public-upload
