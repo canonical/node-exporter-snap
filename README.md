@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://avatars1.githubusercontent.com/u/29598503?v=3&s=256" alt="[Project]">
+  <img src="logo.svg?raw=true" alt="Node Exporter">
   <br />
   Node Exporter
 </h1>
