@@ -1,7 +1,7 @@
 <h1 align="center">
   <img src="https://avatars1.githubusercontent.com/u/29598503?v=3&s=256" alt="[Project]">
   <br />
-  [Project]
+  Node Exporter
 </h1>
 
 <p align="center"><b>This is the snap for <a href="https://github.com/prometheus/node_exporter">node-exporter</a></b>. Exporter for hardware and OS metrics exposed by *NIX kernels, written in Go with pluggable metric collectors.</p>
