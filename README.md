@@ -4,8 +4,7 @@
   [Project]
 </h1>
 
-<p align="center"><b>This is the snap for <a href="[Link]">[Project]</a></b>, <i>“Single-line elevator pitch for your amazing snap”</i>. It works on Ubuntu, Fedora, Debian, and other major Linux
-distributions.</p>
+<p align="center"><b>This is the snap for <a href="https://github.com/prometheus/node_exporter">node-exporter</a></b>. Exporter for hardware and OS metrics exposed by *NIX kernels, written in Go with pluggable metric collectors.</p>
 
 <!-- Uncomment and modify this when you are provided a build status badge
 <p align="center">
@@ -22,11 +21,11 @@ distributions.</p>
 ![my-snap-name](screenshot.png?raw=true "my-snap-name")
 -->
 
-<p align="center">Published for <img src="https://raw.githubusercontent.com/anythingcodes/slack-emoji-for-techies/gh-pages/emoji/tux.png" align="top" width="24" /> with 💝 by Snapcrafters</p>
+<p align="center">Published for <img src="https://raw.githubusercontent.com/anythingcodes/slack-emoji-for-techies/gh-pages/emoji/tux.png" align="top" width="24" /> with 💝 by The Canonical Observability Team</p>
 
 ## Install
 
-    sudo snap install my-snap-name
+    sudo snap install node-exporter
 
 <!-- Uncomment and modify this when your snap is available on the store
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/my-snap-name)
@@ -34,12 +33,37 @@ distributions.</p>
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
 
+
+## Post-installation
+
+The `node-exporter` snap requires some interfaces to be manually connected in order to grant permission to collect certain metrics. Without these connections, only basic metrics are available. To connect all exposed interfaces, run the following commands after installation:
+
+```bash
+sudo snap connect node-exporter:hardware-observe
+sudo snap connect node-exporter:mount-observe
+sudo snap connect node-exporter:network-observe
+sudo snap connect node-exporter:system-observe
+```
+
+## Configuration
+
+Collectors can be enabled/disabled using the `collectors` and `no-collectors` configuration options with this snap. To specify multiple collectors, use a quoted string with space-separated values. For example:
+
+```bash
+sudo snap set node-exporter collectors=ntp
+sudo snap set node-exporter no-collectors="mdadm netstat"
+```
+
+Reference the [prometheus/node_exporter README.md](https://github.com/prometheus/node_exporter/blob/master/README.md#collectors) for the list of collectors enabled by default.
+
+
+
 ## Remaining tasks
 
 Snapcrafters ([join us](https://forum.snapcraft.io/t/snapcrafters-reboot/24625)) are working to land snap install documentation and the [snapcraft.yaml](https://github.com/snapcrafters/fork-and-rename-me/blob/master/snap/snapcraft.yaml) upstream so [Project] can authoritatively publish future releases.
 
   - [x] Click the green "Use this template" button above to create a new repository based on this template
-  - [ ] Give the newly created repository a sensible name, like `godzilla` if you're snapping the Godzilla software (*Note: Do not use `snap` in this name.*)
+  - [x] Give the newly created repository a sensible name, like `godzilla` if you're snapping the Godzilla software (*Note: Do not use `snap` in this name.*)
   - [ ] Update the description of the repository to `Unofficial snap for [Project]`
   - [ ] Update logos and references to `[Project]` and `[my-snap-name]`
   - [ ] Create a snap that runs in `devmode`

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+exec "$SNAP/bin/node_exporter" $(cat "$SNAP_DATA/flags")
+

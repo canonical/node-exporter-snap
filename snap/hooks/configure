@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+collectors="$(snapctl get collectors)"
+
+for collector in $collectors; do
+    # Validate flags using the node_exporter binary itself
+    # --help terminates the program but not before validating arguments
+    # Misuse, perhaps ... but effective!
+    if ! $SNAP/bin/node_exporter --help --collector.$collector > /dev/null 2>&1; then
+        echo "\"$collector\" is not a valid collector" >&2
+        exit 1
+    fi
+    flags="${flags} --collector.$collector"
+done
+
+no_collectors="$(snapctl get no-collectors)"
+
+for no_collector in $no_collectors; do
+    if ! $SNAP/bin/node_exporter --help --no-collector.$no_collector > /dev/null 2>&1; then
+        echo "\"$no_collector\" is not a valid collector" >&2
+        exit 1
+    fi
+    flags="${flags} --no-collector.$no_collector"
+done
+
+echo "$flags" > $SNAP_DATA/flags
+snapctl restart node-exporter
