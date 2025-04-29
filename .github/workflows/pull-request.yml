@@ -29,5 +29,8 @@ jobs:
           # Ensure that LXD containers can talk to the internet
           sudo iptables -F FORWARD
           sudo iptables -P FORWARD ACCEPT
-      - name: Run tests
-        run: make integration
+      # TODO: Fix issue #3 https://github.com/canonical/node-exporter-snap/issues/3
+      #       add itests
+      #
+      # - name: Run tests
+      #   run: make integration

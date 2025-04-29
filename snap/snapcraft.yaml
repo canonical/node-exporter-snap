@@ -27,7 +27,7 @@ parts:
       - gcc
     override-pull: |
         snapcraftctl pull
-        last_committed_tag="$(git describe --abbrev=0 --tags)"
+        last_committed_tag="$(git describe --tags $(git rev-list --tags --max-count=1))"
         git fetch
         git checkout "${last_committed_tag}"
         [ -n "$(echo ${last_committed_tag} | grep "-")" ] && grade=devel || grade=stable
