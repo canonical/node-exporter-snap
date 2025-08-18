@@ -56,3 +56,17 @@ sudo snap set node-exporter no-collectors="mdadm netstat"
 
 Reference the [prometheus/node_exporter README.md](https://github.com/prometheus/node_exporter/blob/master/README.md#collectors) for the list of collectors enabled by default.
 
+
+## Known issues
+
+Currently this strictly confined snap has no access to system files that prevents the following collectors from operating correctly:
+
+- buddyinfo
+- logind
+- mountstats
+- slabinfo
+- softirqs
+
+For more details read:
+
+https://forum.snapcraft.io/t/should-some-snapd-interfaces-be-modified/48242
