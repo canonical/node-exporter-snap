@@ -46,6 +46,7 @@ apps:
     - network-bind
     - time-control
     - hardware-observe
+    - log-observe
     - mount-observe
     - network-observe
     - system-observe
