@@ -43,6 +43,7 @@ apps:
     #   web:
     #     listen-stream: "[::]:9100"
     plugs:
+    - login-session-observe
     - network-bind
     - time-control
     - hardware-observe
