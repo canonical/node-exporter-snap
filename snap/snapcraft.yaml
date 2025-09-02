@@ -12,6 +12,10 @@ base: core24
 adopt-info: node-exporter
 
 plugs:
+  # This plug should be removed when these snapd PRs are merged:
+  # https://github.com/canonical/snapd/pull/15844
+  # https://github.com/canonical/snapd/pull/15895
+  # https://github.com/canonical/snapd/pull/15896
   proc-sys-kernel-random:
     interface: system-files
     read:
