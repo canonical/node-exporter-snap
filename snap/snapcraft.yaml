@@ -11,6 +11,22 @@ confinement: strict
 base: core24
 adopt-info: node-exporter
 
+plugs:
+  proc-sys-kernel-random:
+    interface: system-files
+    read:
+      - /proc/buddyinfo
+      - /proc/slabinfo
+      - /proc/softirqs
+      - /proc/sys/kernel/random/poolsize
+      - /proc/sys/kernel/random/urandom_min_reseed_secs
+      - /proc/sys/kernel/random/write_wakeup_threshold
+      - /proc/sys/kernel/threads-max
+      - /sys/fs/btrfs
+      - /sys/kernel/mm/ksm/full_scans
+      - /sys/kernel/mm/ksm/merge_across_nodes
+      - /sys/kernel/mm/ksm/pages_shared
+
 parts:
   wrapper:
     plugin: dump
@@ -51,3 +67,4 @@ apps:
     - mount-observe
     - network-observe
     - system-observe
+    - proc-sys-kernel-random
