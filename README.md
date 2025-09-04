@@ -43,6 +43,7 @@ sudo snap connect node-exporter:hardware-observe
 sudo snap connect node-exporter:mount-observe
 sudo snap connect node-exporter:network-observe
 sudo snap connect node-exporter:system-observe
+sudo snap connect node-exporter:proc-sys-kernel-random
 ```
 
 ## Configuration
