@@ -30,6 +30,11 @@ plugs:
       - /sys/kernel/mm/ksm/full_scans
       - /sys/kernel/mm/ksm/merge_across_nodes
       - /sys/kernel/mm/ksm/pages_shared
+  etc-node-exporter:
+    interface: system-files
+    read:
+      # General-purpose config folder for e.g. `--collector.textfile.directory`
+      - /etc/node-exporter/
 
 parts:
   wrapper:
@@ -72,3 +77,4 @@ apps:
     - network-observe
     - system-observe
     - proc-sys-kernel-random
+    - etc-node-exporter
