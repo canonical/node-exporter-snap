@@ -23,5 +23,11 @@ for no_collector in $no_collectors; do
     flags="${flags} --no-collector.$no_collector"
 done
 
+web_listen_address="$(snapctl get web.listen-address)"
+
+if [ -n "$web_listen_address" ]; then
+    flags="${flags} --web.listen-address=$web_listen_address"
+fi
+
 echo "$flags" > $SNAP_DATA/flags
 snapctl restart node-exporter
