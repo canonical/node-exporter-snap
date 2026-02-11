@@ -65,5 +65,5 @@ sudo snap set node-exporter web.listen-address="[::1]:9100"
 To verify the configuration was applied successfully and check for any errors, view the service logs:
 
 ```bash
-sudo journalctl -u snap.node-exporter.node-exporter -n 50
+sudo snap logs node-exporter
 ```
