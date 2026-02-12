@@ -26,6 +26,11 @@ done
 web_listen_address="$(snapctl get web.listen-address)"
 
 if [ -n "$web_listen_address" ]; then
+    # Reject values containing whitespace or obvious shell metacharacters
+    if printf '%s' "$web_listen_address" | grep '[[:space:];&|`$<>]' >/dev/null 2>&1; then
+        echo "Invalid web.listen-address: must not contain whitespace or shell metacharacters" >&2
+        exit 1
+    fi
     flags="${flags} --web.listen-address=$web_listen_address"
 fi
 
