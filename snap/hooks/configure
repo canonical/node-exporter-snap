@@ -23,5 +23,16 @@ for no_collector in $no_collectors; do
     flags="${flags} --no-collector.$no_collector"
 done
 
-echo "$flags" > $SNAP_DATA/flags
+web_listen_address="$(snapctl get web.listen-address)"
+
+if [ -n "$web_listen_address" ]; then
+    # Reject values containing whitespace or obvious shell metacharacters
+    if printf '%s' "$web_listen_address" | grep '[[:space:];&|`$<>]' >/dev/null 2>&1; then
+        echo "Invalid web.listen-address: must not contain whitespace or shell metacharacters" >&2
+        exit 1
+    fi
+    flags="${flags} --web.listen-address=$web_listen_address"
+fi
+
+printf '%s\n' "$flags" > "$SNAP_DATA/flags"
 snapctl restart node-exporter
