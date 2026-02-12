@@ -34,5 +34,5 @@ if [ -n "$web_listen_address" ]; then
     flags="${flags} --web.listen-address=$web_listen_address"
 fi
 
-echo "$flags" > $SNAP_DATA/flags
+printf '%s\n' "$flags" > "$SNAP_DATA/flags"
 snapctl restart node-exporter
