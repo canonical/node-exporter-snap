@@ -34,5 +34,15 @@ if [ -n "$web_listen_address" ]; then
     flags="${flags} --web.listen-address=$web_listen_address"
 fi
 
+textfile_directory="$(snapctl get collector.textfile.directory)"
+
+if [ -n "$textfile_directory" ]; then
+    if printf '%s' "$textfile_directory" | grep '[[:space:];&|`$<>]' >/dev/null 2>&1; then
+        echo "Invalid collector.textfile.directory: must not contain whitespace or shell metacharacters" >&2
+        exit 1
+    fi
+    flags="${flags} --collector.textfile.directory=$textfile_directory"
+fi
+
 printf '%s\n' "$flags" > "$SNAP_DATA/flags"
 snapctl restart node-exporter

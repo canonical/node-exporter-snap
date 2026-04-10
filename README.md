@@ -67,3 +67,18 @@ To verify the configuration was applied successfully and check for any errors, v
 ```bash
 sudo snap logs node-exporter
 ```
+
+### Textfile Collector Directory
+
+The textfile collector reads metrics from `.prom` files placed in a directory. To configure the directory:
+
+```bash
+sudo snap set node-exporter collector.textfile.directory=/var/snap/node-exporter/common/textfile_collector
+```
+
+> **Note:** Due to strict snap confinement, the directory must be accessible to the snap. The recommended path is under `$SNAP_COMMON` (`/var/snap/node-exporter/common/`). Create the directory before enabling the collector:
+>
+> ```bash
+> mkdir -p /var/snap/node-exporter/common/textfile_collector
+> sudo snap set node-exporter collector.textfile.directory=/var/snap/node-exporter/common/textfile_collector
+> ```
