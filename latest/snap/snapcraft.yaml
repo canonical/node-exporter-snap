@@ -1,0 +1,77 @@
+name: node-exporter
+summary: Exporter for machine metrics.
+description: |
+  Prometheus exporter for hardware and OS metrics exposed by *NIX kernels,
+  written in Go with pluggable metric collectors.
+
+  This is an unofficial snap which builds and re-packs the source provided by the Prometheus team (https://github.com/prometheus/node_exporter).
+
+contact: jose.masson@canonical.com
+license: Apache-2.0
+confinement: strict
+base: core24
+adopt-info: node-exporter
+icon: snap/local/logo.svg
+source-code: https://github.com/canonical/node-exporter-snap
+
+platforms:
+  amd64:
+  arm64:
+  ppc64el:
+  s390x:
+
+slots:
+  node-exporter-logs:
+    interface: content
+    content: logs
+    source:
+      read:
+        - $SNAP_COMMON/var/log/node-exporter
+
+apps:
+  daemon:
+    command: bin/node_exporter.wrapper
+    daemon: simple
+    plugs:
+      - login-session-observe
+      - network-bind
+      - time-control
+      - hardware-observe
+      - log-observe
+      - mount-observe
+      - network-observe
+      - system-observe
+
+parts:
+  node-exporter:
+    plugin: go
+    source: https://github.com/prometheus/node_exporter.git
+    source-type: git
+    build-snaps:
+      - go/latest/stable
+    build-packages:
+      - gcc
+    override-pull: |
+      craftctl default
+      last_committed_tag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+      git fetch
+      git checkout "${last_committed_tag}"
+      [ -n "$(echo ${last_committed_tag} | grep "-")" ] && grade=devel || grade=stable
+      craftctl set version="${last_committed_tag}"
+      craftctl set grade="$grade"
+
+  initial-config:
+    plugin: dump
+    source: ./snap/local
+    organize:
+      daemon_arguments: etc/node-exporter/daemon_arguments.example
+      snap_config_wrapper: bin/node_exporter.wrapper
+      logo.svg: snap/local/logo.svg
+    stage:
+      - etc/node-exporter/daemon_arguments.example
+      - bin/node_exporter.wrapper
+      - snap/local/logo.svg
+    prime:
+      - etc/node-exporter/daemon_arguments.example
+      - bin/node_exporter.wrapper
+      - snap/local/logo.svg

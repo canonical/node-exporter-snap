@@ -1,12 +1,10 @@
-#snapcraft specifics
+# Snapcraft specifics
 /parts/
 /stage/
 /prime/
-
-*.snap
-
-.snapcraft
-__pycache__
-*.pyc
+/*.snap
 *_source.tar.bz2
 snap/.snapcraft
+
+# remote-build-related files
+**/.git

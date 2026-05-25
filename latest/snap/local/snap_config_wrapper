@@ -1,0 +1,42 @@
+#!/bin/sh
+
+LOG_DIR="$SNAP_COMMON/var/log/node-exporter"
+LOG_FILE="$LOG_DIR/node_exporter.log"
+mkdir -p "$LOG_DIR"
+
+test -e "${SNAP_DATA}/daemon_arguments" || cp "${SNAP}/etc/node-exporter/daemon_arguments.example" "${SNAP_DATA}/daemon_arguments"
+
+. "$SNAP_DATA/daemon_arguments"
+
+collectors="$(snapctl get collectors)"
+for collector in $collectors; do
+    if ! "$SNAP/bin/node_exporter" --help --collector."$collector" > /dev/null 2>&1; then
+        echo "\"$collector\" is not a valid collector" >&2
+        exit 1
+    fi
+    ARGS="${ARGS} --collector.$collector"
+done
+
+no_collectors="$(snapctl get no-collectors)"
+for no_collector in $no_collectors; do
+    if ! "$SNAP/bin/node_exporter" --help --no-collector."$no_collector" > /dev/null 2>&1; then
+        echo "\"$no_collector\" is not a valid collector" >&2
+        exit 1
+    fi
+    ARGS="${ARGS} --no-collector.$no_collector"
+done
+
+web_listen_address="$(snapctl get web.listen-address)"
+if [ -n "$web_listen_address" ]; then
+    if printf '%s' "$web_listen_address" | grep '[[:space:];&|`$<>]' >/dev/null 2>&1; then
+        echo "Invalid web.listen-address: must not contain whitespace or shell metacharacters" >&2
+        exit 1
+    fi
+    ARGS="${ARGS} --web.listen-address=$web_listen_address"
+fi
+
+COMMAND="${SNAP}/bin/node_exporter ${ARGS}"
+
+exec sh -c '
+  exec '"$COMMAND"' 2>&1 | tee -a '"$LOG_FILE"'
+'

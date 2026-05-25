@@ -1,0 +1,20 @@
+name: Release Snap
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 10 * * 1'  # Weekly on Monday at 10:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: canonical/observability/.github/workflows/snap-release.yaml@v2
+    secrets:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+      LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
