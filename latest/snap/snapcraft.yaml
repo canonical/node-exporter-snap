@@ -44,12 +44,17 @@ apps:
   node-exporter:
     command: command-wrapper
     daemon: simple
+    # need systemd activation support
+    # https://github.com/prometheus/node_exporter/issues/1622
+    # sockets:
+    #   web:
+    #     listen-stream: "[::]:9100"
     plugs:
-      - login-session-observe
-      - network-bind
-      - time-control
-      - hardware-observe
-      - log-observe
-      - mount-observe
-      - network-observe
-      - system-observe
+    - login-session-observe
+    - network-bind
+    - time-control
+    - hardware-observe
+    - log-observe
+    - mount-observe
+    - network-observe
+    - system-observe
