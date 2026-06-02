@@ -11,6 +11,12 @@ confinement: strict
 base: core24
 adopt-info: node-exporter
 
+platforms:
+  amd64:
+  arm64:
+  ppc64el:
+  s390x:
+
 parts:
   wrapper:
     plugin: dump
@@ -26,13 +32,14 @@ parts:
     build-packages:
       - gcc
     override-pull: |
-        snapcraftctl pull
-        last_committed_tag="$(git describe --tags $(git rev-list --tags --max-count=1))"
-        git fetch
-        git checkout "${last_committed_tag}"
-        [ -n "$(echo ${last_committed_tag} | grep "-")" ] && grade=devel || grade=stable
-        snapcraftctl set-version "${last_committed_tag}"
-        snapcraftctl set-grade "$grade"
+      craftctl default
+      last_committed_tag="$(git describe --tags $(git rev-list --tags --max-count=1))"
+      git fetch
+      git checkout "${last_committed_tag}"
+      [ -n "$(echo ${last_committed_tag} | grep "-")" ] && grade=devel || grade=stable
+      craftctl set version="${last_committed_tag}"
+      craftctl set grade="$grade"
+
 apps:
   node-exporter:
     command: command-wrapper
