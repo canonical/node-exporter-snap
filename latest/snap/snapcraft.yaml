@@ -16,6 +16,7 @@ platforms:
   arm64:
   ppc64el:
   s390x:
+  riscv64:
 
 parts:
   wrapper:
