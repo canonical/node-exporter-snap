@@ -36,6 +36,13 @@
 
 ## Configuration
 
+### Filesystem metrics
+
+The snap sets `--path.rootfs=/var/lib/snapd/hostfs` so filesystem metrics use
+the host's filesystems rather than the snap's confined mount namespace.
+Mount point labels remain host paths, such as `/`; no additional snap
+configuration is needed.
+
 ### Collectors
 
 Collectors can be enabled/disabled using the `collectors` and `no-collectors` configuration options with this snap. To specify multiple collectors, use a quoted string with space-separated values. For example:
