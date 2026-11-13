@@ -8,13 +8,34 @@ environment:
 
 prepare: |
   snap install "${CRAFT_ARTIFACT}" --dangerous
+  snap connect "${SNAP_NAME}:mount-observe"
+  snap connect "${SNAP_NAME}:system-observe"
+  snap restart "${SNAP_NAME}"
 
 execute: |
   COUNT=0
 
   while [ "$COUNT" -lt "$MAX_RETRIES" ]; do
-    if curl -sf "${ENDPOINT}" | grep -q "node_exporter_build_info"; then
+    METRICS="$(curl -sf "${ENDPOINT}")" || METRICS=""
+    if printf '%s\n' "$METRICS" | grep -q "node_exporter_build_info"; then
       echo "Node exporter is serving metrics!"
+      BLOCK_SIZE="$(stat -f -c %S /)"
+      BLOCKS="$(stat -f -c %b /)"
+      printf '%s\n' "$METRICS" | awk -v block_size="$BLOCK_SIZE" -v blocks="$BLOCKS" '
+        /^node_filesystem_size_bytes\{/ && /mountpoint="\/"/ {
+          found = 1
+          if ($NF != block_size * blocks) {
+            print "Root filesystem size does not match the host" > "/dev/stderr"
+            exit 1
+          }
+        }
+        END {
+          if (!found) {
+            print "Root filesystem size metric is missing" > "/dev/stderr"
+            exit 1
+          }
+        }
+      '
       exit 0
     fi
     echo "[${COUNT}] Waiting for node exporter to start..."

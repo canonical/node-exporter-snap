@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+flags="--path.rootfs=/var/lib/snapd/hostfs"
+
 collectors="$(snapctl get collectors)"
 
 for collector in $collectors; do
